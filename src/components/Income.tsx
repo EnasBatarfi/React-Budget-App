@@ -8,7 +8,7 @@ const Income = () => {
       <input type="text" placeholder="" />
       <h1>Date of income</h1>
       <input type="date" placeholder="" />
-      <button>Add income</button>
+      <button className="btn">Add income</button>
     </section>
   );
 };

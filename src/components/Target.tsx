@@ -1,4 +1,5 @@
 import React from "react";
+import Progress from "./Progress";
 const Target = () => {
   return (
     <section className="target">
@@ -13,7 +14,7 @@ const Target = () => {
       <p>0</p>
 
       <h1>Progress</h1>
-      <p>0%</p>
+      <Progress />
     </section>
   );
 };
