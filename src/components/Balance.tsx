@@ -4,9 +4,11 @@ const Balance = () => {
     <section className="balance">
       <h1>Current balance</h1>
       <p>0</p>
-      <h1>Transfer to saving account</h1>
-      <input type="text" placeholder="" />
-      <button>Transfer</button>
+      <form action="">
+        <label htmlFor="transfer">Transfer to saving account</label>
+        <input type="number" placeholder="" required />
+        <button>Transfer</button>
+      </form>
     </section>
   );
 };

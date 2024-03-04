@@ -3,9 +3,11 @@ import Progress from "./Progress";
 const Target = () => {
   return (
     <section className="target">
-      <h1>Set target</h1>
-      <input type="text" placeholder="" />
-      <button>Reset</button>
+      <form action="">
+        <label htmlFor="target">Set target</label>
+        <input type="number" placeholder="" required />
+        <button>Reset</button>
+      </form>
 
       <h1>Current saving</h1>
       <p>0</p>

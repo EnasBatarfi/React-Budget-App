@@ -2,13 +2,22 @@ import React from "react";
 const Expense = () => {
   return (
     <section className="expense">
-      <h1>Expense source</h1>
-      <input type="text" placeholder="Electricity bill" />
-      <h1>Amount of expense</h1>
-      <input type="text" placeholder="Salary" />
-      <h1>Date of income</h1>
-      <input type="date" placeholder="Salary" />
-      <button>Add Expense</button>
+      <form action="">
+        <div>
+          <label htmlFor="source">Expense source</label>
+          <input type="text" placeholder="Electricity bill" required />
+        </div>
+        <div>
+          <label htmlFor="amount">Amount of expense</label>
+          <input type="number" placeholder="" required />
+        </div>
+        <div>
+          <label htmlFor="date">Date of expense</label>
+          <input type="date" placeholder="" required />
+        </div>
+
+        <button>Add Expense</button>
+      </form>
     </section>
   );
 };

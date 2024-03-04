@@ -2,13 +2,21 @@ import React from "react";
 const Income = () => {
   return (
     <section className="income">
-      <h1>Income source</h1>
-      <input type="text" placeholder="Salary" />
-      <h1>Amount of income</h1>
-      <input type="text" placeholder="" />
-      <h1>Date of income</h1>
-      <input type="date" placeholder="" />
-      <button className="btn">Add income</button>
+      <form action="">
+        <div>
+          <label htmlFor="source">Income source</label>
+          <input type="text" placeholder="Salary" required />
+        </div>
+        <div>
+          <label htmlFor="amount">Amount of income</label>
+          <input type="number" placeholder="" required />
+        </div>
+        <div>
+          <label htmlFor="date">Date of income</label>
+          <input type="date" placeholder="" required />
+        </div>
+        <button className="btn">Add income</button>
+      </form>
     </section>
   );
 };
