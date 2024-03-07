@@ -49,7 +49,7 @@ const expense = () => {
   };
 
   return (
-    <section className="expense">
+    <section className="expense-section">
       <form action="" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="source">Expense source</label>

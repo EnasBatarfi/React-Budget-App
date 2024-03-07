@@ -16,8 +16,8 @@ code {
 .container {
   display: grid;
   grid-template-areas:
-    "income expense target"
-    "balance balance balance";
+    "income-section expense-section target-section"
+    "balance-section balance-section balance-section";
   text-align: center;
   row-gap: 50px;
 }
@@ -30,8 +30,8 @@ form div {
   gap: 15px;
 }
 
-.balance {
-  grid-area: balance;
+.balance-section {
+  grid-area: balance-section;
 }
 
 input,

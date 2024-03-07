@@ -1,7 +1,9 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+
 import ToastMessage from "./ToastMessage";
+
 type incomeType = { id?: string; source: string; amount: number; date: string };
 const Income = () => {
   const [source, setSource] = useState("");
@@ -44,7 +46,7 @@ const Income = () => {
   };
 
   return (
-    <section className="income">
+    <section className="income-section">
       <form action="" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="source">Income source</label>
