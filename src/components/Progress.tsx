@@ -1,9 +1,10 @@
 import React from "react";
 const Progress = (props: { target: number; current: number }) => {
   return (
-    <progress value={props.current} max={props.target}>
-      {props.current}%
-    </progress>
+    <p>
+      <progress value={props.current} max={props.target}></progress>
+      {((props.current / props.target) * 100).toFixed(1)}%
+    </p>
   );
 };
 
