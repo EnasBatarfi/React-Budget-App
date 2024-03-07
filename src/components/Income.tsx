@@ -5,7 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import ToastMessage from "./ToastMessage";
 
 type incomeType = { id?: string; source: string; amount: number; date: string };
-const Income = () => {
+const Income = (props: {
+  onIncomeAmountChange: (incomeAmount: number) => void;
+}) => {
   const [source, setSource] = useState("");
   const [amount, setAmount] = useState(0);
   const [date, setDate] = useState("");
@@ -36,6 +38,8 @@ const Income = () => {
       setIncomes((prevIncomesArray) => [...prevIncomesArray, newIncome]);
 
       ToastMessage("The income added successfully", true);
+
+      props.onIncomeAmountChange(amount);
 
       setSource("");
       setAmount(0);
