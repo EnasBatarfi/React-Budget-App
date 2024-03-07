@@ -27,7 +27,7 @@ const Income = (props: {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (source && amount && date) {
+    if (source && amount > 0 && date) {
       const newIncome = {
         id: uuidv4(),
         source: source,
@@ -45,7 +45,10 @@ const Income = (props: {
       setAmount(0);
       setDate("");
     } else {
-      ToastMessage("Some data is missing, please check again", false);
+      ToastMessage(
+        "Some data is missing or the amount is negative, please check again",
+        false
+      );
     }
   };
 

@@ -2,17 +2,22 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ToastMessage from "./ToastMessage";
-type expenseType = {
-  id?: string;
+
+type ExpenseType = {
+  id: string;
   source: string;
   amount: number;
   date: string;
 };
-const expense = () => {
+
+const Expense = (props: {
+  onExpenseAmountChange: (expenseAmount: number) => void;
+  balanceAmount: number;
+}) => {
   const [source, setSource] = useState("");
   const [amount, setAmount] = useState(0);
   const [date, setDate] = useState("");
-  const [expenses, setExpenses] = useState<expenseType[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseType[]>([]);
 
   const handleSource = (event: ChangeEvent<HTMLInputElement>) => {
     setSource(event.target.value);
@@ -28,15 +33,16 @@ const expense = () => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (source && amount && date) {
-      const newExpense = {
+    if (source && amount > 0 && date && props.balanceAmount >= amount) {
+      const newExpense: ExpenseType = {
         id: uuidv4(),
         source: source,
         amount: amount,
         date: date,
       };
 
-      setExpenses((prevExpensesArray) => [...prevExpensesArray, newExpense]);
+      setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+      props.onExpenseAmountChange(amount); // Informing the parent component about the expense
 
       ToastMessage("The expense added successfully", true);
 
@@ -44,7 +50,14 @@ const expense = () => {
       setAmount(0);
       setDate("");
     } else {
-      ToastMessage("Some data is missing, please check again", false);
+      if (props.balanceAmount < amount) {
+        ToastMessage("Insufficient balance amount", false);
+      } else {
+        ToastMessage(
+          "Some data is missing or the amount is negative, please check again",
+          false
+        );
+      }
     }
   };
 
@@ -91,13 +104,11 @@ const expense = () => {
       </form>
       <ul>
         {expenses.length > 0 ? (
-          expenses.map((expense) => {
-            return (
-              <li key={expense.id}>
-                {expense.source} : {expense.amount} SAR on {expense.date}
-              </li>
-            );
-          })
+          expenses.map((expense) => (
+            <li key={expense.id}>
+              {expense.source} : {expense.amount} SAR on {expense.date}
+            </li>
+          ))
         ) : (
           <p>No expenses</p>
         )}
@@ -106,4 +117,4 @@ const expense = () => {
   );
 };
 
-export default expense;
+export default Expense;

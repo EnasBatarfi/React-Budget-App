@@ -2,7 +2,11 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 
 import ToastMessage from "./ToastMessage";
 
-const Balance = (props: { currentIncomeAmount: number }) => {
+const Balance = (props: {
+  incomeAmount: number;
+  expenseAmount: number;
+  onBalanceAmountChange: (balanceAmount: number) => void;
+}) => {
   const [transfer, setTransfer] = useState(0);
   const [balance, setBalance] = useState(0);
 
@@ -21,13 +25,21 @@ const Balance = (props: { currentIncomeAmount: number }) => {
   };
 
   React.useEffect(() => {
-    setBalance((prevBalance) => prevBalance + props.currentIncomeAmount);
-  }, [props.currentIncomeAmount]);
+    setBalance((prevBalance) => prevBalance + props.incomeAmount);
+  }, [props.incomeAmount]);
+
+  React.useEffect(() => {
+    setBalance((prevBalance) => prevBalance - props.expenseAmount);
+  }, [props.expenseAmount]);
+
+  React.useEffect(() => {
+    props.onBalanceAmountChange(balance);
+  }, [balance]);
 
   return (
     <section className="balance-section">
       <h1>Current balance</h1>
-      <p>{balance}</p>
+      <p>{balance || 0}</p>
       <form action="" onSubmit={handleSubmit}>
         <label htmlFor="transfer">Transfer to saving account</label>
         <input

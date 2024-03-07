@@ -12,14 +12,32 @@ function App() {
   const getIncomeAmount = (incomeAmount: number) => {
     setIncomeAmount(incomeAmount);
   };
+
+  const [expenseAmount, setExpenseAmount] = useState(0);
+  const getExpenseAmount = (expenseAmount: number) => {
+    setExpenseAmount(expenseAmount);
+  };
+
+  const [balanceAmount, setBalanceAmount] = useState(0);
+  const getBalanceAmount = (balanceAmount: number) => {
+    console.log(balanceAmount);
+    setBalanceAmount(balanceAmount);
+  };
   return (
     <>
       <ToastContainer />
       <div className="container">
         <Income onIncomeAmountChange={getIncomeAmount} />
-        <Expense />
+        <Expense
+          onExpenseAmountChange={getExpenseAmount}
+          balanceAmount={balanceAmount}
+        />
         <Target />
-        <Balance currentIncomeAmount={incomeAmount} />
+        <Balance
+          incomeAmount={incomeAmount}
+          expenseAmount={expenseAmount}
+          onBalanceAmountChange={getBalanceAmount}
+        />
       </div>
     </>
   );
