@@ -6,6 +6,7 @@ const Balance = (props: {
   incomeAmount: number;
   expenseAmount: number;
   onBalanceAmountChange: (balanceAmount: number) => void;
+  onTransferAmount: (transferAmount: number) => void;
 }) => {
   const [transfer, setTransfer] = useState(0);
   const [balance, setBalance] = useState(0);
@@ -16,11 +17,17 @@ const Balance = (props: {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (transfer) {
+    if (transfer && transfer <= balance) {
       ToastMessage("The amount is transferred successfully", true);
+      setBalance((prevBalance) => prevBalance - transfer);
+      props.onTransferAmount(transfer);
       setTransfer(0);
     } else {
-      ToastMessage("You cannot transfer zero amount", false);
+      if (transfer > balance) {
+        ToastMessage("Insufficient balance amount", false);
+      } else {
+        ToastMessage("You cannot transfer zero amount", false);
+      }
     }
   };
 

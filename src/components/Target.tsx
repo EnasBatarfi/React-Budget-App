@@ -3,8 +3,9 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import ToastMessage from "./ToastMessage";
 import Progress from "./Progress";
 
-const Target = () => {
+const Target = (props: { transferAmount: number }) => {
   const [target, setTarget] = useState(0);
+  const [currentSaving, setCurrentSaving] = useState(0);
   const [finalTarget, setFinalTarget] = useState(0);
   const handleTarget = (event: ChangeEvent<HTMLInputElement>) => {
     setTarget(Number(event.target.value));
@@ -20,6 +21,13 @@ const Target = () => {
       ToastMessage("You cannot add empty target", false);
     }
   };
+
+  React.useEffect(() => {
+    setCurrentSaving(
+      (prevCurrentSaving) => prevCurrentSaving + props.transferAmount
+    );
+  }, [props.transferAmount]);
+
   return (
     <section className="target-section">
       <form action="" onSubmit={handleSubmit}>
@@ -36,13 +44,13 @@ const Target = () => {
         <button>Reset</button>
       </form>
       <h1>Current saving</h1>
-      <p>0</p>
+      <p>{currentSaving}</p>
 
       <h1>Target</h1>
       <p>{finalTarget}</p>
 
       <h1>Progress</h1>
-      <Progress />
+      <Progress target={finalTarget} current={currentSaving} />
     </section>
   );
 };

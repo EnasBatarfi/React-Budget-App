@@ -1,8 +1,8 @@
 import React from "react";
-const Progress = () => {
+const Progress = (props: { target: number; current: number }) => {
   return (
-    <progress value={10} max={100}>
-      {10}%
+    <progress value={props.current} max={props.target}>
+      {props.current}%
     </progress>
   );
 };

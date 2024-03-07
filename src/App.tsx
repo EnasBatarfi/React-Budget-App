@@ -20,8 +20,12 @@ function App() {
 
   const [balanceAmount, setBalanceAmount] = useState(0);
   const getBalanceAmount = (balanceAmount: number) => {
-    console.log(balanceAmount);
     setBalanceAmount(balanceAmount);
+  };
+
+  const [transferAmount, setTransferAmount] = useState(0);
+  const getTransferAmount = (transferAmount: number) => {
+    setTransferAmount(transferAmount);
   };
   return (
     <>
@@ -32,11 +36,12 @@ function App() {
           onExpenseAmountChange={getExpenseAmount}
           balanceAmount={balanceAmount}
         />
-        <Target />
+        <Target transferAmount={transferAmount} />
         <Balance
           incomeAmount={incomeAmount}
           expenseAmount={expenseAmount}
           onBalanceAmountChange={getBalanceAmount}
+          onTransferAmount={getTransferAmount}
         />
       </div>
     </>
