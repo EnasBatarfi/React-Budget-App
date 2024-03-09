@@ -1,3 +1,4 @@
+/* Global styles */
 body {
   margin: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -13,6 +14,7 @@ code {
     monospace;
 }
 
+/* Layout styles */
 .container {
   display: grid;
   grid-template-areas:
@@ -22,6 +24,7 @@ code {
   row-gap: 50px;
 }
 
+/* Form styles */
 form,
 form div {
   display: flex;
@@ -30,10 +33,12 @@ form div {
   gap: 15px;
 }
 
+/* Balance section styles */
 .balance-section {
   grid-area: balance-section;
 }
 
+/* Input and button styles */
 input,
 button {
   padding: 10px;
@@ -41,11 +46,8 @@ button {
   border-radius: 5px;
   font-size: 12px;
 }
-/* input {
-  width: 100%;
-  max-width: 100px;
-} */
 
+/* Button styles */
 button {
   background-color: #636668;
   color: #fff;

@@ -1,56 +1,77 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+// React imports
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+
+// Component import
 import ToastMessage from "./ToastMessage";
 
+// Define the type for an expense
 type ExpenseType = {
-  id: string;
+  id?: string;
   source: string;
   amount: number;
   date: string;
 };
 
+// Expense component
 const Expense = (props: {
   onExpenseAmountChange: (expenseAmount: number) => void;
   balanceAmount: number;
 }) => {
-  const [source, setSource] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [date, setDate] = useState("");
+  // State variables
+  const [totalExpensesAmount, setTotalExpensesAmount] = useState(0);
+  const [expense, setExpense] = useState<ExpenseType>({
+    source: "",
+    amount: 0,
+    date: "",
+  });
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
 
-  const handleSource = (event: ChangeEvent<HTMLInputElement>) => {
-    setSource(event.target.value);
+  // Handle input change
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setExpense((prevExpense) => {
+      return { ...prevExpense, [event.target.name]: event.target.value };
+    });
   };
 
-  const handleAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    setAmount(Number(event.target.value));
+  // Handle deletion of an expense
+  const handleDelete = (id: string | undefined) => {
+    const filteredExpenses = expenses.filter((expense) => expense.id !== id);
+    setExpenses(filteredExpenses);
   };
 
-  const handleDate = (event: ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
-  };
+  // Update total expenses amount when expenses change
+  useEffect(() => {
+    const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+    setTotalExpensesAmount(total);
+    props.onExpenseAmountChange(total);
+  }, [expenses]);
 
+  // Handle form submission
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (source && amount > 0 && date && props.balanceAmount >= amount) {
+    if (
+      expense.source &&
+      expense.amount > 0 &&
+      expense.date &&
+      props.balanceAmount >= expense.amount
+    ) {
       const newExpense: ExpenseType = {
         id: uuidv4(),
-        source: source,
-        amount: amount,
-        date: date,
+        ...expense,
+        amount: Number(expense.amount), // To ensure amount is a number
       };
 
       setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
-      props.onExpenseAmountChange(amount); // Informing the parent component about the expense
-
       ToastMessage("The expense added successfully", true);
-
-      setSource("");
-      setAmount(0);
-      setDate("");
+      setExpense({
+        source: "",
+        amount: 0,
+        date: "",
+      });
     } else {
-      if (props.balanceAmount < amount) {
+      if (props.balanceAmount < expense.amount) {
         ToastMessage("Insufficient balance amount", false);
       } else {
         ToastMessage(
@@ -61,8 +82,10 @@ const Expense = (props: {
     }
   };
 
+  // JSX rendering
   return (
     <section className="expense-section">
+      {/* Form for adding expense */}
       <form action="" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="source">Expense source</label>
@@ -71,9 +94,9 @@ const Expense = (props: {
             placeholder="Groceries"
             id="source"
             name="source"
-            value={source}
+            value={expense.source}
             required
-            onChange={handleSource}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -83,9 +106,9 @@ const Expense = (props: {
             placeholder=""
             id="amount"
             name="amount"
-            value={amount}
+            value={expense.amount}
             required
-            onChange={handleAmount}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -95,18 +118,21 @@ const Expense = (props: {
             placeholder=""
             id="date"
             name="date"
-            value={date}
+            value={expense.date}
             required
-            onChange={handleDate}
+            onChange={handleChange}
           />
         </div>
         <button className="btn">Add expense</button>
       </form>
+
+      {/* Display list of expenses */}
       <ul>
         {expenses.length > 0 ? (
           expenses.map((expense) => (
             <li key={expense.id}>
               {expense.source} : {expense.amount} SAR on {expense.date}
+              <button onClick={() => handleDelete(expense.id)}>Delete</button>
             </li>
           ))
         ) : (
