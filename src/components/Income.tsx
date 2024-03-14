@@ -26,12 +26,21 @@ const Income = (props: {
     date: "",
   });
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
+  const [isValidForm, setIsValidForm] = useState(false);
+  const [sourceError, setSourceError] = useState("");
+  const [amountError, setAmountError] = useState("");
 
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setIncome((prevIncome) => {
       return { ...prevIncome, [event.target.name]: event.target.value };
     });
+    if (income.source.length <= 2)
+      setSourceError("Length should be more than 2 character");
+    else setSourceError("");
+
+    if (income.amount <= 0) setAmountError("Amount should be more than 0");
+    else setAmountError("");
   };
 
   // Handle deletion of an income
@@ -46,6 +55,12 @@ const Income = (props: {
     setTotalIncomeAmount(total);
     props.onIncomeAmountChange(total);
   }, [incomes]);
+
+  // Validate income inputs
+  useEffect(() => {
+    const validate = Object.values(income).every((value) => value);
+    setIsValidForm(validate);
+  }, [income, isValidForm]);
 
   // Handle form submission
   const handleSubmit = (event: FormEvent) => {
@@ -87,6 +102,7 @@ const Income = (props: {
             required
             onChange={handleChange}
           />
+          <p className="error-msg">{sourceError}</p>
         </div>
         <div>
           <label htmlFor="amount">Amount of income</label>
@@ -99,6 +115,7 @@ const Income = (props: {
             required
             onChange={handleChange}
           />
+          <p className="error-msg">{amountError}</p>
         </div>
         <div>
           <label htmlFor="date">Date of income</label>
@@ -112,7 +129,13 @@ const Income = (props: {
             onChange={handleChange}
           />
         </div>
-        <button className="btn">Add income</button>
+        <button
+          className="btn"
+          type="submit"
+          disabled={isValidForm ? false : true}
+        >
+          Add income
+        </button>
       </form>
 
       {/* Display list of incomes */}

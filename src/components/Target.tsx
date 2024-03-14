@@ -19,12 +19,16 @@ const Target = (props: { transferAmount: number }) => {
   // Function to handle form submission
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (target) {
-      ToastMessage("The target is updated successfully", true);
-      setFinalTarget(target);
-      setTarget(0);
-    } else {
-      ToastMessage("You cannot add empty target", false);
+    const isConfirmed = confirm("Are you sure you want to update the target?");
+    console.log(isConfirmed);
+    if (isConfirmed) {
+      if (target) {
+        ToastMessage("The target is updated successfully", true);
+        setFinalTarget(target);
+        setTarget(0);
+      } else {
+        ToastMessage("You cannot add empty target", false);
+      }
     }
   };
 

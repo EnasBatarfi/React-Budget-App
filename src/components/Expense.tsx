@@ -27,12 +27,21 @@ const Expense = (props: {
     date: "",
   });
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
+  const [isValidForm, setIsValidForm] = useState(false);
+  const [sourceError, setSourceError] = useState("");
+  const [amountError, setAmountError] = useState("");
 
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setExpense((prevExpense) => {
       return { ...prevExpense, [event.target.name]: event.target.value };
     });
+    if (expense.source.length <= 2)
+      setSourceError("Length should be more than 2 character");
+    else setSourceError("");
+
+    if (expense.amount <= 0) setAmountError("Amount should be more than 0");
+    else setAmountError("");
   };
 
   // Handle deletion of an expense
@@ -47,6 +56,12 @@ const Expense = (props: {
     setTotalExpensesAmount(total);
     props.onExpenseAmountChange(total);
   }, [expenses]);
+
+  // Validate expense inputs
+  useEffect(() => {
+    const validate = Object.values(expense).every((value) => value);
+    setIsValidForm(validate);
+  }, [expense, isValidForm]);
 
   // Handle form submission
   const handleSubmit = (event: FormEvent) => {
@@ -98,6 +113,7 @@ const Expense = (props: {
             required
             onChange={handleChange}
           />
+          <p className="error-msg">{sourceError}</p>
         </div>
         <div>
           <label htmlFor="amount">Amount of expense</label>
@@ -110,6 +126,7 @@ const Expense = (props: {
             required
             onChange={handleChange}
           />
+          <p className="error-msg">{amountError}</p>
         </div>
         <div>
           <label htmlFor="date">Date of expense</label>
@@ -123,7 +140,13 @@ const Expense = (props: {
             onChange={handleChange}
           />
         </div>
-        <button className="btn">Add expense</button>
+        <button
+          className="btn"
+          type="submit"
+          disabled={isValidForm ? false : true}
+        >
+          Add expense
+        </button>
       </form>
 
       {/* Display list of expenses */}

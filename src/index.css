@@ -58,3 +58,15 @@ button {
 button:hover {
   background-color: #3b3c3d;
 }
+
+button:disabled {
+  background-color: #cccdce;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+/* Error Paragraph Style */
+.error-msg {
+  font-size: 10px;
+  color: red;
+}

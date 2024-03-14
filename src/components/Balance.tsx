@@ -15,26 +15,39 @@ const Balance = (props: {
   const [transfer, setTransfer] = useState(0);
   const [balance, setBalance] = useState(0);
   const [savingAmount, setSavingAmount] = useState(0); // State to hold saving amount
+  // Error handling variables
+  const [isValidForm, setIsValidForm] = useState(false);
+  const [transferError, setTransferError] = useState("");
 
   // Handle transfer input change
   const handleTransfer = (event: ChangeEvent<HTMLInputElement>) => {
-    setTransfer(Number(event.target.value));
+    const newTransfer = Number(event.target.value);
+    setTransfer(newTransfer);
+
+    if (newTransfer > balance || newTransfer < 0)
+      setTransferError("Insufficient balance amount");
+    else setTransferError("");
   };
 
   // Handle form submission
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (transfer && transfer <= balance) {
-      ToastMessage("The amount is transferred successfully", true);
-      setBalance((prevBalance) => prevBalance - transfer);
-      setSavingAmount((prevSavingAmount) => prevSavingAmount + transfer); // Add transferred amount to saving
-      props.onTransferAmount(transfer);
-      setTransfer(0);
-    } else {
-      if (transfer > balance) {
-        ToastMessage("Insufficient balance amount", false);
+    const isConfirmed = confirm(
+      `Are you sure you want to transfer ${transfer} SAR`
+    );
+    if (isConfirmed) {
+      if (transfer && transfer <= balance) {
+        ToastMessage("The amount is transferred successfully", true);
+        setBalance((prevBalance) => prevBalance - transfer);
+        setSavingAmount((prevSavingAmount) => prevSavingAmount + transfer); // Add transferred amount to saving
+        props.onTransferAmount(transfer);
+        setTransfer(0);
       } else {
-        ToastMessage("You cannot transfer zero amount", false);
+        if (transfer > balance) {
+          ToastMessage("Insufficient balance amount", false);
+        } else {
+          ToastMessage("You cannot transfer zero amount", false);
+        }
       }
     }
   };
@@ -46,6 +59,11 @@ const Balance = (props: {
     setBalance(calculatedBalance);
     props.onBalanceAmountChange(calculatedBalance);
   }, [props.incomeAmount, props.expenseAmount, savingAmount]);
+
+  // Validate transfer inputs
+  useEffect(() => {
+    setIsValidForm(transfer > 0 && transfer <= balance && transferError === "");
+  }, [transfer, balance, transferError]);
 
   // JSX rendering
   return (
@@ -67,7 +85,14 @@ const Balance = (props: {
           required
           onChange={handleTransfer}
         />
-        <button>Transfer</button>
+        <p className="error-msg">{transferError}</p>
+        <button
+          className="btn"
+          type="submit"
+          disabled={isValidForm ? false : true}
+        >
+          Transfer
+        </button>
       </form>
     </section>
   );
