@@ -10,10 +10,10 @@ function Home() {
       {/* Text container */}
       <div className="text-container">
         {/* Welcome message */}
-        <h1 className="home-header">Welcome to Our App!</h1>
+        <h1 className="home-header">Welcome to the Budget Tracker App!</h1>
         {/* Button to navigate to the budget */}
         <Link to="/budget" className="home-btn">
-          Go to Budget
+          Go to Budget Page
         </Link>
       </div>
     </div>
