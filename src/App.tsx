@@ -1,63 +1,27 @@
 // React imports
-import React, { useState } from "react";
+import React from "react";
+// React Router imports
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Toast notification imports
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// Import components and styles
+import Home from "./pages/Home";
+import Budget from "./pages/Budget";
+import "./index.css";
 
-// Component imports
-import Income from "./components/Income";
-import Expense from "./components/Expense";
-import Target from "./components/Target";
-import Balance from "./components/Balance";
-
-function App() {
-  // State variables for income, expense, balance, and transfer amounts
-  const [incomeAmount, setIncomeAmount] = useState(0);
-  const [expenseAmount, setExpenseAmount] = useState(0);
-  const [balanceAmount, setBalanceAmount] = useState(0);
-  const [transferAmount, setTransferAmount] = useState(0);
-
-  // Functions to update state variables when amounts change
-  const getIncomeAmount = (incomeAmount: number) => {
-    setIncomeAmount(incomeAmount);
-  };
-
-  const getExpenseAmount = (expenseAmount: number) => {
-    setExpenseAmount(expenseAmount);
-  };
-
-  const getBalanceAmount = (balanceAmount: number) => {
-    setBalanceAmount(balanceAmount);
-  };
-
-  const getTransferAmount = (transferAmount: number) => {
-    setTransferAmount(transferAmount);
-  };
-
+const App = () => {
   return (
-    <>
-      {/* Toast notification container */}
-      <ToastContainer />
+    // Wrap the application with BrowserRouter for routing
+    <BrowserRouter>
+      {/* Define routes for different pages */}
+      <Routes>
+        {/* Route for the home page */}
+        <Route path="/" element={<Home />} />
 
-      {/* Main container for application */}
-      <div className="container">
-        {/* Components for income, expense, target, and balance */}
-        <Income onIncomeAmountChange={getIncomeAmount} />
-        <Expense
-          onExpenseAmountChange={getExpenseAmount}
-          balanceAmount={balanceAmount}
-        />
-        <Target transferAmount={transferAmount} />
-        <Balance
-          incomeAmount={incomeAmount}
-          expenseAmount={expenseAmount}
-          onBalanceAmountChange={getBalanceAmount}
-          onTransferAmount={getTransferAmount}
-        />
-      </div>
-    </>
+        {/* Route for the budget page */}
+        <Route path="/budget" element={<Budget />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

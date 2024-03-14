@@ -71,8 +71,6 @@ const Balance = (props: {
       {/* Display current balance and saving amount */}
       <h1>Current balance</h1>
       <p>{balance || 0}</p>
-      <p>Saving amount: {savingAmount}</p>
-
       {/* Form for transferring amount */}
       <form action="" onSubmit={handleSubmit}>
         <label htmlFor="transfer">Transfer to saving account</label>

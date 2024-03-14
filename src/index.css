@@ -33,6 +33,15 @@ form div {
   gap: 15px;
 }
 
+/* Paragraph Style */
+.income-section p,
+.expense-section p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 /* Balance section styles */
 .balance-section {
   grid-area: balance-section;
@@ -69,4 +78,60 @@ button:disabled {
 .error-msg {
   font-size: 10px;
   color: red;
+}
+
+/* Home page styles */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  text-align: center;
+  background-image: url("./assets/stellrweb-djb1whucfBY-unsplash.jpg");
+  background-size: cover;
+}
+
+.text-container {
+  margin-right: 50px;
+  max-width: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.home-header {
+  font-family: "Playfair Display";
+  font-size: 80px;
+  letter-spacing: 10px;
+  margin-top: -20px;
+}
+
+.home-btn {
+  padding: 15px 30px;
+  background-color: #000000;
+  color: #fcf5ed;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  border-radius: 8px;
+}
+
+.home-btn:hover {
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* List Items Style */
+ul {
+  padding-left: 0;
+}
+
+li {
+  list-style-position: inside;
+}
+
+li button {
+  margin-left: 10px;
 }
