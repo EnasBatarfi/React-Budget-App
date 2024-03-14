@@ -51,9 +51,15 @@ const Income = (props: {
     const { name, value } = event.target;
     setIncome((prevIncome) => ({ ...prevIncome, [name]: value }));
 
-    if (name === "source" && value.length <= 2)
-      setSourceError("Length should be more than 2 characters");
-    else setSourceError("");
+    if (name === "source") {
+      if (value.trim().length === 0) {
+        setSourceError("Source cannot be empty");
+      } else if (value.length < 3) {
+        setSourceError("Length should be more than 2 characters");
+      } else {
+        setSourceError("");
+      }
+    }
 
     if (name === "amount" && Number(value) <= 0)
       setAmountError("Amount should be more than 0");
@@ -73,9 +79,12 @@ const Income = (props: {
 
   // Validate income inputs
   useEffect(() => {
-    const validate = Object.values(income).every((value) => value);
+    const validate =
+      Object.values(income).every((value) => value) &&
+      !sourceError &&
+      !amountError;
     setIsValidForm(validate);
-  }, [income, isValidForm]);
+  }, [income, sourceError]);
 
   // Handle form submission
   const handleSubmit = (event: FormEvent) => {

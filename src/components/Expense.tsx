@@ -53,9 +53,15 @@ const Expense = (props: {
     const { name, value } = event.target;
     setExpense((prevExpense) => ({ ...prevExpense, [name]: value }));
 
-    if (name === "source" && value.length <= 2)
-      setSourceError("Length should be more than 2 characters");
-    else setSourceError("");
+    if (name === "source") {
+      if (value.trim().length === 0) {
+        setSourceError("Source cannot be empty");
+      } else if (value.length < 3) {
+        setSourceError("Length should be more than 2 characters");
+      } else {
+        setSourceError("");
+      }
+    }
 
     if (name === "amount" && Number(value) <= 0)
       setAmountError("Amount should be more than 0");
@@ -75,7 +81,10 @@ const Expense = (props: {
 
   // Validate expense inputs
   useEffect(() => {
-    const validate = Object.values(expense).every((value) => value);
+    const validate =
+      Object.values(expense).every((value) => value) &&
+      !sourceError &&
+      !amountError;
     setIsValidForm(validate);
   }, [expense, isValidForm]);
 
