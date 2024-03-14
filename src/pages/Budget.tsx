@@ -41,7 +41,7 @@ function Budget() {
       <ToastContainer />
 
       {/* Main container for application */}
-      <div className="container">
+      <main className="container">
         {/* Components for income, expense, target, and balance */}
         <Income onIncomeAmountChange={getIncomeAmount} />
         <Expense
@@ -55,7 +55,7 @@ function Budget() {
           onBalanceAmountChange={getBalanceAmount}
           onTransferAmount={getTransferAmount}
         />
-      </div>
+      </main>
     </>
   );
 }
