@@ -1,5 +1,12 @@
 // React imports
-import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,7 +26,6 @@ const Income = (props: {
   onIncomeAmountChange: (incomeAmount: number) => void;
 }) => {
   // State variables
-  const [totalIncomeAmount, setTotalIncomeAmount] = useState(0); // Renamed to totalIncomeAmount
   const [income, setIncome] = useState<IncomeType>({
     source: "",
     amount: 0,
@@ -30,16 +36,27 @@ const Income = (props: {
   const [sourceError, setSourceError] = useState("");
   const [amountError, setAmountError] = useState("");
 
+  // Memoize total income calculation
+  const totalIncomeAmount = useMemo(() => {
+    return incomes.reduce((acc, income) => acc + income.amount, 0);
+  }, [incomes]);
+
+  // Lifted onIncomeAmountChange function with useCallback
+  const onIncomeAmountChangeCallback = useCallback(props.onIncomeAmountChange, [
+    props.onIncomeAmountChange,
+  ]);
+
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setIncome((prevIncome) => {
-      return { ...prevIncome, [event.target.name]: event.target.value };
-    });
-    if (income.source.length <= 2)
-      setSourceError("Length should be more than 2 character");
+    const { name, value } = event.target;
+    setIncome((prevIncome) => ({ ...prevIncome, [name]: value }));
+
+    if (name === "source" && value.length <= 2)
+      setSourceError("Length should be more than 2 characters");
     else setSourceError("");
 
-    if (income.amount <= 0) setAmountError("Amount should be more than 0");
+    if (name === "amount" && Number(value) <= 0)
+      setAmountError("Amount should be more than 0");
     else setAmountError("");
   };
 
@@ -51,9 +68,7 @@ const Income = (props: {
 
   // Update total income amount when incomes change
   useEffect(() => {
-    const total = incomes.reduce((acc, income) => acc + income.amount, 0);
-    setTotalIncomeAmount(total);
-    props.onIncomeAmountChange(total);
+    props.onIncomeAmountChange(totalIncomeAmount);
   }, [incomes]);
 
   // Validate income inputs

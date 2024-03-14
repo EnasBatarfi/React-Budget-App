@@ -1,5 +1,12 @@
 // React imports
-import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 // Component import
 import ToastMessage from "./ToastMessage";
@@ -13,11 +20,15 @@ const Balance = (props: {
 }) => {
   // State variables
   const [transfer, setTransfer] = useState(0);
-  const [balance, setBalance] = useState(0);
   const [savingAmount, setSavingAmount] = useState(0); // State to hold saving amount
   // Error handling variables
   const [isValidForm, setIsValidForm] = useState(false);
   const [transferError, setTransferError] = useState("");
+
+  // Memoize balance calculation
+  const balance = useMemo(() => {
+    return props.incomeAmount - props.expenseAmount - savingAmount;
+  }, [props.incomeAmount, props.expenseAmount, savingAmount]);
 
   // Handle transfer input change
   const handleTransfer = (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,34 +41,36 @@ const Balance = (props: {
   };
 
   // Handle form submission
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    const isConfirmed = confirm(
-      `Are you sure you want to transfer ${transfer} SAR`
-    );
-    if (isConfirmed) {
-      if (transfer && transfer <= balance) {
-        ToastMessage("The amount is transferred successfully", true);
-        setBalance((prevBalance) => prevBalance - transfer);
-        setSavingAmount((prevSavingAmount) => prevSavingAmount + transfer); // Add transferred amount to saving
-        props.onTransferAmount(transfer);
-        setTransfer(0);
-      } else {
-        if (transfer > balance) {
-          ToastMessage("Insufficient balance amount", false);
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+      const isConfirmed = confirm(
+        `Are you sure you want to transfer ${transfer} SAR`
+      );
+      if (isConfirmed) {
+        if (transfer && transfer <= balance) {
+          // Update balance and saving amount
+          ToastMessage("The amount is transferred successfully", true);
+          setSavingAmount((prevSavingAmount) => prevSavingAmount + transfer);
+          // Trigger transfer amount callback
+          props.onTransferAmount(transfer);
+          setTransfer(0);
         } else {
-          ToastMessage("You cannot transfer zero amount", false);
+          // Handle invalid transfer
+          if (transfer > balance) {
+            ToastMessage("Insufficient balance amount", false);
+          } else {
+            ToastMessage("You cannot transfer zero amount", false);
+          }
         }
       }
-    }
-  };
+    },
+    [balance, transfer, props.onTransferAmount]
+  );
 
   // Update balance and saving amount when income, expense, or saving amount changes
   useEffect(() => {
-    const calculatedBalance =
-      props.incomeAmount - props.expenseAmount - savingAmount; // Use saving amount in the calculation
-    setBalance(calculatedBalance);
-    props.onBalanceAmountChange(calculatedBalance);
+    props.onBalanceAmountChange(balance);
   }, [props.incomeAmount, props.expenseAmount, savingAmount]);
 
   // Validate transfer inputs

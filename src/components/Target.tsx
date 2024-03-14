@@ -20,7 +20,6 @@ const Target = (props: { transferAmount: number }) => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     const isConfirmed = confirm("Are you sure you want to update the target?");
-    console.log(isConfirmed);
     if (isConfirmed) {
       if (target) {
         ToastMessage("The target is updated successfully", true);
@@ -54,7 +53,7 @@ const Target = (props: { transferAmount: number }) => {
           required
           onChange={handleTarget}
         />
-        <button>Reset</button>
+        <button>Update</button>
       </form>
 
       {/* Display current saving */}

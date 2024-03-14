@@ -126,12 +126,17 @@ button:disabled {
 /* List Items Style */
 ul {
   padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  max-width: 80%;
 }
 
 li {
   list-style-position: inside;
+  margin-bottom: 5px;
 }
 
 li button {
-  margin-left: 10px;
+  margin-left: 50px;
 }

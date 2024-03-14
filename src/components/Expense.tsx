@@ -1,5 +1,12 @@
 // React imports
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
@@ -20,7 +27,6 @@ const Expense = (props: {
   balanceAmount: number;
 }) => {
   // State variables
-  const [totalExpensesAmount, setTotalExpensesAmount] = useState(0);
   const [expense, setExpense] = useState<ExpenseType>({
     source: "",
     amount: 0,
@@ -31,16 +37,28 @@ const Expense = (props: {
   const [sourceError, setSourceError] = useState("");
   const [amountError, setAmountError] = useState("");
 
+  // Memoize total income calculation
+  const totalExpenseAmount = useMemo(() => {
+    return expenses.reduce((acc, expense) => acc + expense.amount, 0);
+  }, [expenses]);
+
+  // Lifted onIncomeAmountChange function with useCallback
+  const onIncomeAmountChangeCallback = useCallback(
+    props.onExpenseAmountChange,
+    [props.onExpenseAmountChange]
+  );
+
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setExpense((prevExpense) => {
-      return { ...prevExpense, [event.target.name]: event.target.value };
-    });
-    if (expense.source.length <= 2)
-      setSourceError("Length should be more than 2 character");
+    const { name, value } = event.target;
+    setExpense((prevExpense) => ({ ...prevExpense, [name]: value }));
+
+    if (name === "source" && value.length <= 2)
+      setSourceError("Length should be more than 2 characters");
     else setSourceError("");
 
-    if (expense.amount <= 0) setAmountError("Amount should be more than 0");
+    if (name === "amount" && Number(value) <= 0)
+      setAmountError("Amount should be more than 0");
     else setAmountError("");
   };
 
@@ -52,9 +70,7 @@ const Expense = (props: {
 
   // Update total expenses amount when expenses change
   useEffect(() => {
-    const total = expenses.reduce((acc, expense) => acc + expense.amount, 0);
-    setTotalExpensesAmount(total);
-    props.onExpenseAmountChange(total);
+    props.onExpenseAmountChange(totalExpenseAmount);
   }, [expenses]);
 
   // Validate expense inputs
