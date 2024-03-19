@@ -10,6 +10,7 @@ import Income from "../components/Income";
 import Expense from "../components/Expense";
 import Target from "../components/Target";
 import Balance from "../components/Balance";
+import { BudgetContext } from "../context/Context";
 
 function Budget() {
   // State variables for income, expense, balance, and transfer amounts
@@ -18,45 +19,31 @@ function Budget() {
   const [balanceAmount, setBalanceAmount] = useState(0);
   const [transferAmount, setTransferAmount] = useState(0);
 
-  // Functions to update state variables when amounts change
-  const getIncomeAmount = (incomeAmount: number) => {
-    setIncomeAmount(incomeAmount);
-  };
-
-  const getExpenseAmount = (expenseAmount: number) => {
-    setExpenseAmount(expenseAmount);
-  };
-
-  const getBalanceAmount = (balanceAmount: number) => {
-    setBalanceAmount(balanceAmount);
-  };
-
-  const getTransferAmount = (transferAmount: number) => {
-    setTransferAmount(transferAmount);
-  };
-
   return (
-    <>
+    <BudgetContext.Provider
+      value={{
+        incomeAmount,
+        setIncomeAmount,
+        expenseAmount,
+        setExpenseAmount,
+        balanceAmount,
+        setBalanceAmount,
+        transferAmount,
+        setTransferAmount,
+      }}
+    >
       {/* Toast notification container */}
       <ToastContainer />
 
       {/* Main container for application */}
       <main className="container">
         {/* Components for income, expense, target, and balance */}
-        <Income onIncomeAmountChange={getIncomeAmount} />
-        <Expense
-          onExpenseAmountChange={getExpenseAmount}
-          balanceAmount={balanceAmount}
-        />
-        <Target transferAmount={transferAmount} />
-        <Balance
-          incomeAmount={incomeAmount}
-          expenseAmount={expenseAmount}
-          onBalanceAmountChange={getBalanceAmount}
-          onTransferAmount={getTransferAmount}
-        />
+        <Income />
+        <Expense />
+        <Target />
+        <Balance />
       </main>
-    </>
+    </BudgetContext.Provider>
   );
 }
 

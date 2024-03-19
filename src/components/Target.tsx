@@ -1,14 +1,21 @@
 // React imports
-import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 
 // Component imports
 import ToastMessage from "./ToastMessage";
 import Progress from "./Progress";
+import { BudgetContext } from "../context/Context";
 
-const Target = (props: { transferAmount: number }) => {
+const Target = () => {
   // State variables for target, current saving, and final target
+  const { transferAmount } = useContext(BudgetContext);
   const [target, setTarget] = useState(0);
-  const [currentSaving, setCurrentSaving] = useState(0);
   const [finalTarget, setFinalTarget] = useState(0);
 
   // Function to handle target input change
@@ -31,13 +38,6 @@ const Target = (props: { transferAmount: number }) => {
     }
   };
 
-  // Update current saving when transfer amount changes
-  useEffect(() => {
-    setCurrentSaving(
-      (prevCurrentSaving) => prevCurrentSaving + props.transferAmount
-    );
-  }, [props.transferAmount]);
-
   // JSX rendering
   return (
     <section className="target-section">
@@ -58,7 +58,7 @@ const Target = (props: { transferAmount: number }) => {
 
       {/* Display current saving */}
       <h1>Current saving</h1>
-      <p>{currentSaving}</p>
+      <p>{transferAmount}</p>
 
       {/* Display final target */}
       <h1>Target</h1>
@@ -66,7 +66,7 @@ const Target = (props: { transferAmount: number }) => {
 
       {/* Display progress */}
       <h1>Progress</h1>
-      <Progress target={finalTarget} current={currentSaving} />
+      <Progress target={finalTarget} current={transferAmount} />
     </section>
   );
 };

@@ -3,6 +3,7 @@ import React, {
   ChangeEvent,
   FormEvent,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -12,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 
 // Component import
 import ToastMessage from "./ToastMessage";
+import { BudgetContext } from "../context/Context";
 
 // Define the type for an expense
 type ExpenseType = {
@@ -22,31 +24,19 @@ type ExpenseType = {
 };
 
 // Expense component
-const Expense = (props: {
-  onExpenseAmountChange: (expenseAmount: number) => void;
-  balanceAmount: number;
-}) => {
+const Expense = () => {
   // State variables
   const [expense, setExpense] = useState<ExpenseType>({
     source: "",
     amount: 0,
     date: "",
   });
+  const { expenseAmount, setExpenseAmount, balanceAmount } =
+    useContext(BudgetContext);
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
   const [isValidForm, setIsValidForm] = useState(false);
   const [sourceError, setSourceError] = useState("");
   const [amountError, setAmountError] = useState("");
-
-  // Memoize total income calculation
-  const totalExpenseAmount = useMemo(() => {
-    return expenses.reduce((acc, expense) => acc + expense.amount, 0);
-  }, [expenses]);
-
-  // Lifted onIncomeAmountChange function with useCallback
-  const onIncomeAmountChangeCallback = useCallback(
-    props.onExpenseAmountChange,
-    [props.onExpenseAmountChange]
-  );
 
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +66,9 @@ const Expense = (props: {
 
   // Update total expenses amount when expenses change
   useEffect(() => {
-    props.onExpenseAmountChange(totalExpenseAmount);
+    setExpenseAmount(
+      expenses.reduce((acc, expense) => acc + expense.amount, 0)
+    );
   }, [expenses]);
 
   // Validate expense inputs
@@ -95,7 +87,7 @@ const Expense = (props: {
       expense.source &&
       expense.amount > 0 &&
       expense.date &&
-      props.balanceAmount >= expense.amount
+      balanceAmount >= expense.amount
     ) {
       const newExpense: ExpenseType = {
         id: uuidv4(),
@@ -111,7 +103,7 @@ const Expense = (props: {
         date: "",
       });
     } else {
-      if (props.balanceAmount < expense.amount) {
+      if (balanceAmount < expense.amount) {
         ToastMessage("Insufficient balance amount", false);
       } else {
         ToastMessage(

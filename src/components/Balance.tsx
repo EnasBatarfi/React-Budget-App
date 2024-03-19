@@ -6,101 +6,96 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useContext,
 } from "react";
 
 // Component import
 import ToastMessage from "./ToastMessage";
+import { BudgetContext } from "../context/Context";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+// Define type for transfer
+type transferType = { transfer: number };
 
 // Balance component
-const Balance = (props: {
-  incomeAmount: number;
-  expenseAmount: number;
-  onBalanceAmountChange: (balanceAmount: number) => void;
-  onTransferAmount: (transferAmount: number) => void;
-}) => {
-  // State variables
-  const [transfer, setTransfer] = useState(0);
-  const [savingAmount, setSavingAmount] = useState(0); // State to hold saving amount
-  // Error handling variables
-  const [isValidForm, setIsValidForm] = useState(false);
-  const [transferError, setTransferError] = useState("");
+const Balance = () => {
+  // Form handling using react-hook-form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<transferType>();
+
+  // Extract necessary context values
+  const {
+    incomeAmount,
+    expenseAmount,
+    balanceAmount,
+    setBalanceAmount,
+    transferAmount,
+    setTransferAmount,
+  } = useContext(BudgetContext);
 
   // Memoize balance calculation
-  const balance = useMemo(() => {
-    return props.incomeAmount - props.expenseAmount - savingAmount;
-  }, [props.incomeAmount, props.expenseAmount, savingAmount]);
-
-  // Handle transfer input change
-  const handleTransfer = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTransfer = Number(event.target.value);
-    setTransfer(newTransfer);
-
-    if (newTransfer > balance || newTransfer < 0)
-      setTransferError("Insufficient balance amount");
-    else setTransferError("");
-  };
-
-  // Handle form submission
-  const handleSubmit = useCallback(
-    (event: FormEvent) => {
-      event.preventDefault();
-      const isConfirmed = confirm(
-        `Are you sure you want to transfer ${transfer} SAR`
-      );
-      if (isConfirmed) {
-        if (transfer && transfer <= balance) {
-          // Update balance and saving amount
-          ToastMessage("The amount is transferred successfully", true);
-          setSavingAmount((prevSavingAmount) => prevSavingAmount + transfer);
-          // Trigger transfer amount callback
-          props.onTransferAmount(transfer);
-          setTransfer(0);
-        } else {
-          // Handle invalid transfer
-          if (transfer > balance) {
-            ToastMessage("Insufficient balance amount", false);
-          } else {
-            ToastMessage("You cannot transfer zero amount", false);
-          }
-        }
-      }
-    },
-    [balance, transfer, props.onTransferAmount]
+  setBalanceAmount(
+    useMemo(() => {
+      return incomeAmount - expenseAmount - transferAmount;
+    }, [incomeAmount, expenseAmount, transferAmount])
   );
 
-  // Update balance and saving amount when income, expense, or saving amount changes
-  useEffect(() => {
-    props.onBalanceAmountChange(balance);
-  }, [props.incomeAmount, props.expenseAmount, savingAmount]);
-
-  // Validate transfer inputs
-  useEffect(() => {
-    setIsValidForm(transfer > 0 && transfer <= balance && transferError === "");
-  }, [transfer, balance, transferError]);
+  // Function to handle form submission
+  const submitForm: SubmitHandler<transferType> = (data, event) => {
+    // Confirm transfer with user
+    const isConfirmed = confirm(
+      `Are you sure you want to transfer ${data.transfer} SAR`
+    );
+    if (isConfirmed) {
+      // Proceed with transfer if confirmed
+      if (!errors.transfer) {
+        // Update balance and saving amount
+        ToastMessage("The amount is transferred successfully", true);
+        setTransferAmount(transferAmount + data.transfer);
+        setBalanceAmount(balanceAmount - transferAmount);
+        setValue("transfer", 0);
+      } else {
+        // Handle invalid transfer
+        ToastMessage("Unsuccessful transferring ... try again", false);
+      }
+    }
+  };
 
   // JSX rendering
   return (
     <section className="balance-section">
       {/* Display current balance and saving amount */}
       <h1>Current balance</h1>
-      <p>{balance || 0}</p>
+      <p>{balanceAmount || 0}</p>
       {/* Form for transferring amount */}
-      <form action="" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(submitForm)}>
         <label htmlFor="transfer">Transfer to saving account</label>
         <input
           type="number"
           placeholder=""
           id="transfer"
-          name="transfer"
-          value={transfer}
           required
-          onChange={handleTransfer}
+          // Validate transfer amount
+          {...register("transfer", {
+            required: true,
+            max: {
+              value: balanceAmount,
+              message: "Insufficient balance amount",
+            },
+            min: { value: 1, message: "Transfer amount must be positive" },
+          })}
         />
-        <p className="error-msg">{transferError}</p>
+        {/* Display validation error if any */}
+        <p className="error-msg">{errors.transfer?.message}</p>
+        {/* Submit button */}
         <button
           className="btn"
           type="submit"
-          disabled={isValidForm ? false : true}
+          // disabled={isValidForm ? false : true}
         >
           Transfer
         </button>

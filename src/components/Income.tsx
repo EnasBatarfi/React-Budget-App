@@ -6,12 +6,14 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useContext,
 } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
 // Component import
 import ToastMessage from "./ToastMessage";
+import { BudgetContext } from "../context/Context";
 
 // Define the type for an income
 type IncomeType = {
@@ -22,29 +24,18 @@ type IncomeType = {
 };
 
 // Income component
-const Income = (props: {
-  onIncomeAmountChange: (incomeAmount: number) => void;
-}) => {
+const Income = () => {
   // State variables
   const [income, setIncome] = useState<IncomeType>({
     source: "",
     amount: 0,
     date: "",
   });
+  const { incomeAmount, setIncomeAmount } = useContext(BudgetContext);
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
   const [isValidForm, setIsValidForm] = useState(false);
   const [sourceError, setSourceError] = useState("");
   const [amountError, setAmountError] = useState("");
-
-  // Memoize total income calculation
-  const totalIncomeAmount = useMemo(() => {
-    return incomes.reduce((acc, income) => acc + income.amount, 0);
-  }, [incomes]);
-
-  // Lifted onIncomeAmountChange function with useCallback
-  const onIncomeAmountChangeCallback = useCallback(props.onIncomeAmountChange, [
-    props.onIncomeAmountChange,
-  ]);
 
   // Handle input change
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +65,7 @@ const Income = (props: {
 
   // Update total income amount when incomes change
   useEffect(() => {
-    props.onIncomeAmountChange(totalIncomeAmount);
+    setIncomeAmount(incomes.reduce((acc, income) => acc + income.amount, 0));
   }, [incomes]);
 
   // Validate income inputs

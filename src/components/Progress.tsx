@@ -12,7 +12,7 @@ const Progress = (props: { target: number; current: number }) => {
       {/* Display progress bar */}
       <progress value={props.current} max={props.target}></progress>
       {/* Display progress percentage */}
-      {progress.toFixed(1)}%
+      {progress.toFixed(1)}
     </p>
   );
 };
