@@ -16,12 +16,17 @@ code {
 
 /* Layout styles */
 .container {
-  display: grid;
-  grid-template-areas:
-    "income-section expense-section target-section"
-    "balance-section balance-section balance-section";
+  display: flex;
+  justify-content: space-between;
   text-align: center;
-  row-gap: 50px;
+  gap: 40px;
+}
+.container > * {
+  flex: 1; /* Each component takes equal space */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Form styles */
@@ -128,11 +133,12 @@ ul {
   padding-left: 0;
   display: flex;
   flex-direction: column;
-  align-items: end;
-  max-width: 80%;
+  align-items: center;
+  max-width: 100%;
 }
 
 li {
+  font-size: 12px;
   list-style-position: inside;
   margin-bottom: 5px;
 }
